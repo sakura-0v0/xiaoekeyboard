@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+src/xiaoe_keyboard/__init__.py
+src/xiaoe_keyboard/xiaoeKeyboard.py
+src/xiaoe_keyboard.egg-info/PKG-INFO
+src/xiaoe_keyboard.egg-info/SOURCES.txt
+src/xiaoe_keyboard.egg-info/dependency_links.txt
+src/xiaoe_keyboard.egg-info/requires.txt
+src/xiaoe_keyboard.egg-info/top_level.txt

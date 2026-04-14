@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xiaoe-keyboard"
+version = "4.0.1"
+description = "一个轻量级全局热键管理器，支持组合键、热键动态设置，支持绑定记录用户按下的组合键。"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "一只黄小娥", email = "1206985031@qq.com"}
+]
+keywords = ["hotkey", "keyboard", "global-hook", "pynput"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "pynput",
+]
+
+[project.urls]
+Homepage = "https://www.yzhxe.cn/"
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
