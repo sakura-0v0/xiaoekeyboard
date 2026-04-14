@@ -56,7 +56,7 @@ hotkey_list = [
 # 2. 定义保存和预处理函数
 def save_fun(name, value):
     print(f"[已保存] {name} -> {value}")
-    # TODO: 在这里写入配置文件或数据库
+    # TO DO: 在这里写入配置文件或数据库
 
 will_save_hotkey = {}
 
