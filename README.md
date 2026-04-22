@@ -43,20 +43,42 @@ input("按回车键退出程序...\n")
 
 ```python
 import tkinter as tk
-from xiaoe_keyboard import Keyboard
+from typing import List
+
+from xiaoe_keyboard import Keyboard, HotkeyType
+
+config = {
+    '操作a': ['ctrl_l', 'D']
+}
 
 win = tk.Tk()
 win.geometry("300x200")
 
 # 1. 定义初始热键
-hotkey_list = [
-    {'name': '测试热键', 'value': {'ctrl_l', 'd'}, 'down_fun': lambda: print("执行了热键！"), 'up_fun': lambda: print("松开了热键！")}
+hotkey_list: List[HotkeyType] = [
+    {'name': '测试热键', 'value': set(config['操作a']), 'down_fun': lambda: print("执行了操作a！"), 'up_fun': lambda: print("松开了操作a！")}
 ]
+def flash_get_now_key_label():
+    """用于更新标签按键值"""
+    label.config(text = f"当前热键: 【{'】+【'.join(config['操作a'])}】")
+    
+def update_btn_status(is_change):
+    """用于更新按钮文字"""
+    if is_change:
+        text = "修改热键"
+    else:
+        text = "取消设置"
+    btn.config(text=text)
+
 
 # 2. 定义保存和预处理函数
 def save_fun(name, value):
+    """保存按键时的操作"""
+    value = list(value)
     print(f"[已保存] {name} -> {value}")
-    # TO DO: 在这里写入配置文件或数据库
+    config['操作a'] = value.copy()
+    flash_get_now_key_label()
+    update_btn_status(True)
 
 will_save_hotkey = {}
 
@@ -69,18 +91,24 @@ def fitter_fun(name, value):
 kb = Keyboard(hotkey_list, tk_win=win, save_fun=save_fun, fitter_fun=fitter_fun)
 
 # 4. UI 交互逻辑
-label = tk.Label(win, text="当前热键: Ctrl+D")
+label = tk.Label(win)
+flash_get_now_key_label()
 label.pack(pady=10)
 
 def start_setting():
-    if kb.get_hotkey_setting() is None:
-        btn.config(text="取消设置")
+    if kb.get_hotkey_setting() is None and not will_save_hotkey:
+        update_btn_status(False)
+        label.config(text="请按下你要设置的组合键...")
         kb.set_hotkey_setting('测试热键') # 开启读取模式
     else:
-        btn.config(text="修改热键")
+        update_btn_status(True)
         kb.set_hotkey_setting(None)      # 关闭读取模式
+        flash_get_now_key_label()
+        will_save_hotkey.clear()
 
-btn = tk.Button(win, text="修改热键", command=start_setting)
+
+btn = tk.Button(win, command=start_setting)
+update_btn_status(True)
 btn.pack(pady=5)
 
 def do_save():
@@ -100,7 +128,7 @@ win.mainloop()
 - `hotkey_list`: 热键配置列表，字典格式。`value` 必须是 `set`。
 - `tk_win`: 传入 Tkinter 的窗口对象。如果你用 PySide/PyQt，不要传这个参数，确保你的 `down_fun` 内部使用非阻塞方式调用 UI 即可。
 - `save_fun`: 当热键被成功应用/保存时触动的回调。
-- `fitter_fun`: 如果提供此项，用户松开按键时**不会立刻保存**，而是触发此函数。你需要自行在 UI 上暂存数据，并在用户点击“确认”后手动调用 `set_one_hotkey_dict()`。
+- `fitter_fun`: 如果提供此项，用户松开按键时**不会立刻保存**，而是触发此函数。你需要自行在 UI 上暂存数据，并在用户点击“确认”后手动调用 `set_one_hotkey_dict()`。如果你不提供该参数，当用户松开第一个按键后会立刻触发保存。
 
 ## 📄 开源协议
 
