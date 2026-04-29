@@ -8,7 +8,7 @@
 
 - **🧠 智能组合键匹配**：底层使用 `set` 子集算法匹配按键，**完全无视用户按下组合键的先后顺序**。
 - **🎯 贪心精准触发**：同时注册 `Ctrl+D` 和 `Ctrl+Shift+D` 时，只会精准触发匹配度最高的那个，不会发生冲突。
-- **🎛️ 完美的“预览-保存”交互**：支持 `fitter_fun` 拦截机制。用户按下快捷键后，可以先在 UI 上预览（如："你即将设置为 Ctrl+C"），用户点“确认”后再真正应用保存，体验极其优雅。也可以不设置 `fitter_fun` ，用户松手后立刻触发保存。传入你的保存方法 `save_fun` ，比如说将按键存储在配置文件中，它将在触发保存后调用。
+- **🎛️ 完美的“预览-保存”交互**：支持 `validate_keys_fun` 拦截机制。用户按下快捷键后，可以先在 UI 上预览（如："你即将设置为 Ctrl+C"），用户点“确认”后再真正应用保存，体验极其优雅。也可以不设置 `validate_keys_fun` ，用户松手后立刻触发保存。传入你的保存方法 `save_fun` ，比如说将按键存储在配置文件中，它将在触发保存后调用。
 
 ## 📦 安装
 
@@ -82,13 +82,13 @@ def save_fun(name, value):
 
 will_save_hotkey = {}
 
-def fitter_fun(name, value):
+def validate_keys_fun(name, value):
     """用户松手后，先触发这里，用于在界面上展示预览"""
     will_save_hotkey[name] = value
     label.config(text=f"即将设置为: {value} (请点保存)")
 
 # 3. 实例化 Keyboard，传入 tk_win 保证线程安全
-kb = Keyboard(hotkey_list, tk_win=win, save_fun=save_fun, fitter_fun=fitter_fun)
+kb = Keyboard(hotkey_list, tk_win=win, save_fun=save_fun, validate_keys_fun=validate_keys_fun)
 
 # 4. UI 交互逻辑
 label = tk.Label(win)
@@ -128,7 +128,7 @@ win.mainloop()
 - `hotkey_list`: 热键配置列表，字典格式。`value` 必须是 `set`。
 - `tk_win`: 传入 Tkinter 的窗口对象。如果你用 PySide/PyQt，不要传这个参数，确保你的 `down_fun` 内部使用非阻塞方式调用 UI 即可。
 - `save_fun`: 当热键被成功应用/保存时触动的回调。
-- `fitter_fun`: 如果提供此项，用户松开按键时**不会立刻保存**，而是触发此函数。你需要自行在 UI 上暂存数据，并在用户点击“确认”后手动调用 `set_one_hotkey_dict()`。如果你不提供该参数，当用户松开第一个按键后会立刻触发保存。
+- `validate_keys_fun`: 如果提供此项，用户松开按键时**不会立刻保存**，而是触发此函数。你需要自行在 UI 上暂存数据，并在用户点击“确认”后手动调用 `set_one_hotkey_dict()`。如果你不提供该参数，当用户松开第一个按键后会立刻触发保存。
 
 ## 📄 开源协议
 
