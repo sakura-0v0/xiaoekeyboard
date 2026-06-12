@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xiaoe-keyboard"
-version = "5.0.0"
+version = "6.0.0"
 description = "一个轻量级全局热键管理器，支持组合键、热键动态设置，支持鼠标识别，支持绑定记录用户按下的组合键。"
 readme = "README.md"
 license = {text = "MIT"}

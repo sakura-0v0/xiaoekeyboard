@@ -87,8 +87,13 @@ def validate_keys_fun(name, value):
     will_save_hotkey[name] = value
     label.config(text=f"即将设置为: {value} (请点保存)")
 
-# 3. 实例化 Keyboard，传入 tk_win 保证线程安全
-kb = Keyboard(hotkey_list, tk_win=win, save_fun=save_fun, validate_keys_fun=validate_keys_fun)
+# 3. 实例化 Keyboard，传入调用回调的函数 run_fun_callback 保证线程安全
+kb = Keyboard(
+    hotkey_list, 
+    run_fun_callback=lambda func: win.after(0, func), 
+    save_fun=save_fun, 
+    validate_keys_fun=validate_keys_fun
+)
 
 # 4. UI 交互逻辑
 label = tk.Label(win)
@@ -125,8 +130,24 @@ win.mainloop()
 
 ## 📝 核心参数说明
 
-- `hotkey_list`: 热键配置列表，字典格式。`value` 必须是 `set`。
-- `tk_win`: 传入 Tkinter 的窗口对象。如果你用 PySide/PyQt，不要传这个参数，确保你的 `down_fun` 内部使用非阻塞方式调用 UI 即可。
+- `hotkey_list`: 热键配置列表，字典格式。`value` 必须是 `set`。如果需要解绑按键，设置{None}即可忽略该按键。
+- `run_fun_callback`: 传入能在UI线程调用回调函数的函数。
+```python
+# tkinter:
+run_fun_callback=lambda func: win.after(0, func)
+
+# qt(这里使用传递字典信号的方式):
+class App(QWidget):
+    run_signal = QtCore.pyqtSignal(dict)
+    def __init__(self):
+        self.run_signal.connect(
+            lambda func_dict: func_dict['func']()
+        )
+    def run_func(self, func):
+        run_signal.emit({'func': func})
+app = App()
+run_fun_callback=app.run_func # 传入xiaoe_keyboard的参数
+```
 - `save_fun`: 当热键被成功应用/保存时触动的回调。
 - `validate_keys_fun`: 如果提供此项，用户松开按键时**不会立刻保存**，而是触发此函数。你需要自行在 UI 上暂存数据，并在用户点击“确认”后手动调用 `set_one_hotkey_dict()`。如果你不提供该参数，当用户松开第一个按键后会立刻触发保存。
 
