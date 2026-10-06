@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: xiaoe-keyboard
-Version: 6.0.1
+Version: 6.0.2
 Summary: 一个轻量级全局热键管理器，支持组合键、热键动态设置，支持鼠标识别，支持绑定记录用户按下的组合键。
 Author-email: 一只黄小娥 <1206985031@qq.com>
 License: MIT
